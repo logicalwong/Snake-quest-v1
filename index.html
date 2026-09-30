@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>🐍 Snake Quest · Game Boy Edition</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div class="console-wrapper">
+
+        <!-- ============ GAME BOY CONSOLE ============ -->
+        <div class="gameboy">
+
+            <!-- Top notch / cartridge slot -->
+            <div class="cartridge-slot"></div>
+
+            <!-- ===== SCREEN BEZEL ===== -->
+            <div class="screen-bezel">
+                <div class="screen">
+                    <canvas id="gameCanvas" width="600" height="600"></canvas>
+
+                    <!-- Overlay -->
+                    <div class="canvas-overlay active" id="overlay">
+                        <div class="overlay-content" id="overlayContent">
+                            <div class="overlay-icon">🎮</div>
+                            <h2 class="overlay-title">READY?</h2>
+                            <p class="overlay-text">Use arrow keys or swipe</p>
+                            <button class="overlay-btn" id="startBtn">START</button>
+                        </div>
+                    </div>
+
+                    <!-- Power LED -->
+                    <div class="power-led" id="powerLed">
+                        <span class="led-dot"></span>
+                        <span class="led-label">POWER</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== BRAND LABEL ===== -->
+            <div class="brand-label">
+                <span class="brand-text">SNAKE QUEST</span>
+                <span class="brand-sub">DUO · EDITION</span>
+            </div>
+
+            <!-- ===== CONTROLS SECTION ===== -->
+            <div class="controls-section">
+
+                <!-- D-PAD -->
+                <div class="dpad">
+                    <button class="dpad-btn dpad-up" data-dir="up" aria-label="Up">▲</button>
+                    <button class="dpad-btn dpad-left" data-dir="left" aria-label="Left">◀</button>
+                    <button class="dpad-btn dpad-center" disabled aria-hidden="true"></button>
+                    <button class="dpad-btn dpad-right" data-dir="right" aria-label="Right">▶</button>
+                    <button class="dpad-btn dpad-down" data-dir="down" aria-label="Down">▼</button>
+                </div>
+
+                <!-- A / B BUTTONS -->
+                <div class="ab-buttons">
+                    <div class="ab-group">
+                        <button class="ab-btn b-btn" id="pauseBtnMobile" aria-label="Pause">
+                            <span>B</span>
+                        </button>
+                        <span class="ab-label">PAUSE</span>
+                    </div>
+                    <div class="ab-group">
+                        <button class="ab-btn a-btn" id="restartBtnMobile" aria-label="Restart">
+                            <span>A</span>
+                        </button>
+                        <span class="ab-label">RESTART</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== START / SELECT ===== -->
+            <div class="start-select">
+                <div class="ss-group">
+                    <button class="ss-btn" id="pauseBtn" aria-label="Pause"></button>
+                    <span class="ss-label">START</span>
+                </div>
+                <div class="ss-group">
+                    <button class="ss-btn" id="restartBtn" aria-label="Restart"></button>
+                    <span class="ss-label">SELECT</span>
+                </div>
+            </div>
+
+            <!-- ===== SPEAKER GRILL ===== -->
+            <div class="speaker-grill">
+                <span></span><span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span><span></span>
+            </div>
+
+        </div>
+
+        <!-- ===== EXTERNAL SIDE PANEL (Difficulty + Scores) ===== -->
+        <aside class="side-panel">
+
+            <!-- Difficulty -->
+            <section class="panel">
+                <h2 class="panel-title">Difficulty</h2>
+                <div class="difficulty-bar">
+                    <button class="diff-btn" data-diff="easy">
+                        <span class="diff-icon">🌿</span>
+                        <span class="diff-name">Easy</span>
+                    </button>
+                    <button class="diff-btn active" data-diff="medium">
+                        <span class="diff-icon">⚡</span>
+                        <span class="diff-name">Medium</span>
+                    </button>
+                    <button class="diff-btn" data-diff="hard">
+                        <span class="diff-icon">🔥</span>
+                        <span class="diff-name">Hard</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Scores -->
+            <section class="panel">
+                <h2 class="panel-title">Scoreboard</h2>
+                <div class="score-list">
+                    <div class="score-card player-card">
+                        <div class="score-icon">🟢</div>
+                        <div class="score-info">
+                            <span class="score-label">You</span>
+                            <span class="score-value" id="score">0</span>
+                        </div>
+                    </div>
+                    <div class="score-card ai-card">
+                        <div class="score-icon">🤖</div>
+                        <div class="score-info">
+                            <span class="score-label">AI</span>
+                            <span class="score-value" id="aiScore">0</span>
+                        </div>
+                    </div>
+                    <div class="score-card high-card">
+                        <div class="score-icon">⭐</div>
+                        <div class="score-info">
+                            <span class="score-label">Best</span>
+                            <span class="score-value" id="highScore">0</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Status -->
+            <section class="panel">
+                <h2 class="panel-title">Status</h2>
+                <div class="status-bar">
+                    <span class="status-dot" id="statusDot"></span>
+                    <span id="gameStatus">Press START</span>
+                </div>
+            </section>
+
+        </aside>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
